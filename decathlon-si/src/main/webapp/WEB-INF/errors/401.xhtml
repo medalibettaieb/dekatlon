@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/errorPagesTemplate.xhtml">
+	<ui:define name="titleErrorCode">401</ui:define>
+	<ui:define name="errorPageContent">
+		<div class="error-page">
+            <h2 class="headline text-red" style="margin-right: 20px;"> 401</h2>
+            <div class="error-content">
+              <br/>
+			  <h3><i class="fa fa-warning text-red"></i> Oops! Unauthorized access.</h3>
+              <p>
+                You are not allowed to access to the requested page. Authentication is mandatory. Please <a href="#{request.contextPath}/pages/login.xhtml">log in</a> before.
+              </p>
+              
+            </div><!-- /.error-content -->
+          </div>
+	</ui:define>
+
+</ui:composition>

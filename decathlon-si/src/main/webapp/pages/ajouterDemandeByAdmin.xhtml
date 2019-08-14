@@ -1,0 +1,106 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrought"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/facelets/template.xhtml">
+	<ui:define name="pageTitle">espace Admin</ui:define>
+	<ui:define name="content">
+		<ul class="breadcrumb">
+			<li><i class="ace-icon fa fa-home home-icon"></i> <a
+				href="adminHome.jsf">Acceuil</a></li>
+			<li class="active">espace Administrateur</li>
+		</ul>
+		<!-- /.breadcrumb -->
+
+	</ui:define>
+	<ui:define name="pageContent">
+		<h:form id="form">
+
+			<p:panel header="ajouter Demande">
+				<p:messages id="m" />
+				<p:accordionPanel>
+					<p:tab title="Matricule ">
+						<h:panelGrid columns="2" cellpadding="10">
+							<h:outputText value="matricule *:" />
+							<p:autoComplete id="mat" maxResults="240" dropdown="true"
+								value="#{demandeBean.matriculeForAdminToAdd}"
+								completeMethod="#{demandeBean.completeTheme}" var="m"
+								itemLabel="#{m}" itemValue="#{m}" forceSelection="true"
+								required="true" requiredMessage="matricule obligatoire">
+								<p:ajax update="@form:m" />
+							</p:autoComplete>
+						</h:panelGrid>
+					</p:tab>
+					<p:tab title="Détails Demande">
+						<p:panelGrid columns="7">
+							<p:outputLabel value="acte médical" />
+							<p:selectOneMenu value="#{demandeBean.acteMedical}"
+								converter="#{acteConverter}">
+								<f:selectItems value="#{acteBean.acteMedicals}" var="a"
+									itemLabel="#{a.typeActe}" itemValue="#{a}" />
+							</p:selectOneMenu>
+							<p:outputLabel value="montant" />
+							<p:inputNumber id="ii" value="#{demandeBean.montant}"
+								symbol=" DT" symbolPosition="s" placeholder="Montant"
+								decimalSeparator="," thousandSeparator="." required="true"
+								requiredMessage="indiquez un montant">
+							</p:inputNumber>
+							<p:outputLabel value="date" />
+							<p:calendar value="#{demandeBean.dateActe}" />
+							<p:commandButton icon="ui-icon-circle-plus"
+								action="#{demandeBean.addDetailToList}" update="@form" />
+						</p:panelGrid>
+
+						<p:dataTable value="#{demandeBean.detailDemandesTMP}" var="aa"
+							emptyMessage="Veuillez ajouter un acte médical">
+							<p:column headerText="Acte médical">
+								<h:outputText value="#{aa.acteMedical.typeActe}" />
+							</p:column>
+							<p:column headerText="montant">
+								<h:outputFormat value="#{aa.montant}" />
+							</p:column>
+							<p:column headerText="date">
+								<h:outputText value="#{aa.dateActe}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+							<p:column>
+								<p:commandButton icon="ui-icon-circle-minus"
+									action="#{demandeBean.deleteDetailToList(aa)}" update="@form" />
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:accordionPanel>
+				<p:accordionPanel>
+					<p:tab title="Feuille de soin">
+						<p:fileUpload
+							fileUploadListener="#{imageUploader.handleFileUpload}"
+							label="Ajouter" uploadLabel="Télécharger" cancelLabel="Annuler"
+							mode="advanced" auto="false" sizeLimit="10485760" multiple="true"
+							fileLimit="10" fileLimitMessage="Maximum 10 images"
+							dragDropSupport="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+
+					</p:tab>
+					</p:accordionPanel>
+
+					<p:commandButton update="@form"
+						style="background:#6FDC6F;color: #FFFFFF;float:left"
+						action="#{demandeBean.doAddDemandeBtAdmin()}"
+						value="confirmer demande">
+						<p:confirm header="Confirmation" message="Êtes-vous sûr?"
+							icon="ui-icon-alert" />
+					</p:commandButton>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="Oui" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="Non" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+			</p:panel>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>

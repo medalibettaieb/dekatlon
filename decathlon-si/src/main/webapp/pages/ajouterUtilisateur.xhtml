@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<ui:composition template="/facelets/template.xhtml">
+	<ui:define name="content">
+		<ul class="breadcrumb">
+			<li><i class="ace-icon fa fa-home home-icon"></i> <a
+				href="adminHome.jsf">Acceuil</a></li>
+			<li class="active">espace Administrateur</li>
+		</ul>
+		<!-- /.breadcrumb -->
+
+	</ui:define>
+
+
+	<ui:define name="pageContent">
+		<h:form id="form">
+			<p:panel header="ajouter Utilistateur">
+				<p:wizard flowListener="#{utilisateurBean.onFlowProcess}"
+					backLabel="Retour" nextLabel="Suivant">
+					<p:tab id="personal" title="Utilisateur">
+						<h:panelGrid columns="3">
+							<p:outputLabel value="Matricule: *" />
+							<p:inputText id="i1" value="#{utilisateurBean.matricule}"
+								placeholder="Matricule" required="true"
+								requiredMessage="svp indiquez une valeur">
+								<f:validator validatorId="mv" />
+								<p:ajax update="@form:m1" />
+							</p:inputText>
+							<p:message id="m1" for="i1" />
+							<p:outputLabel value="Nom: *" />
+							<p:inputText id="i2" value="#{utilisateurBean.nom}"
+								placeholder="Nom de l'utilisateur"
+								validatorMessage="Entrer un nom valide" required="true"
+								requiredMessage="svp indiquez une valeur">
+								<f:validateRegex pattern="^[a-zA-Z ]*$" />
+								<p:ajax update="@form:m2" />
+							</p:inputText>
+							<p:message id="m2" for="i2" />
+							<p:outputLabel value="Prénom: *" />
+							<p:inputText id="i3" value="#{utilisateurBean.prenom}"
+								placeholder="Prénom de l'utilisateur"
+								validatorMessage="Entrer un prénom valide" required="true"
+								requiredMessage="svp indiquez une valeur">
+								<f:validateRegex pattern="^[a-zA-Z ]*$" />
+								<p:ajax update="@form:m3" />
+							</p:inputText>
+							<p:message id="m3" for="i3" />
+							<p:outputLabel value="email: *" />
+							<p:inputText id="i4" value="#{utilisateurBean.mail}"
+								placeholder="mail@soprahr.com" required="true"
+								requiredMessage="svp indiquez une valeur"
+								>
+								<p:ajax update="@form:m4" />
+								<f:validator validatorId="emailValidator" />
+							</p:inputText>
+							<p:message id="m4" for="i4" />
+							<p:outputLabel value="Type d'utilisateur: *" />
+							<p:selectOneMenu required="true"
+								requiredMessage="svp indiquez une valeur" id="i5"
+								value="#{utilisateurBean.type}">
+								<f:selectItem itemLabel="Collaborateur"
+									itemValue="Collaborateur" />
+								<f:selectItem itemLabel="Administrateur"
+									itemValue="Administrateur" />
+							</p:selectOneMenu>
+							<p:message for="i5" />
+							<h:outputLabel for="pwd1" value="mot de passe: *" />
+							<p:password id="pwd1" value="#{utilisateurBean.password}"
+								placeholder="Mot de passe" match="pwd2" label="Password 1"
+								validatorMessage="Le mp 1 doit correspondre au mp2"
+								required="true" requiredMessage="svp indiquez une valeur">
+								<p:ajax></p:ajax>
+							</p:password>
+							<p:message for="pwd1"></p:message>
+							<h:outputLabel for="pwd2" value="vérification mot de passe: *" />
+							<p:password id="pwd2" value="#{utilisateurBean.password}"
+								validatorMessage="Le mp 1 doit correspondre au mp2"
+								placeholder="Confirmation" label="Password 2" required="true"
+								requiredMessage="svp indiquez une valeur" />
+							<p:message for="pwd1"></p:message>
+							<h:outputText value="Sauter la page: " />
+							<h:selectBooleanCheckbox value="#{utilisateurBean.skip}" />
+						</h:panelGrid>
+					</p:tab>
+					<p:tab title="Assurés">
+
+						<p:panelGrid columns="3">
+							<p:outputLabel value="Matricule" />
+							<p:inputText id="matriculeAssure"
+								value="#{utilisateurBean.assure.matricule}" />
+							<p:message id="s1" for="matriculeAssure" /> 
+
+							<p:outputLabel value="Nom" />
+							<p:inputText id="nomAssure"
+								value="#{utilisateurBean.assure.name}"
+								validatorMessage="Entrer un nom valide">
+								<f:validateRegex pattern="^[a-zA-Z ]*$" />
+							</p:inputText>
+							<p:message id="s2" for="nomAssure" />
+
+							<p:outputLabel value="Prénom" />
+							<p:inputText id="prenomAssure"
+								value="#{utilisateurBean.assure.prenom}"
+								validatorMessage="Entrer un prénom valide">
+								<f:validateRegex pattern="^[a-zA-Z ]*$" />
+							</p:inputText>
+							<p:message id="s3" for="prenomAssure" />
+
+							<p:outputLabel value="Parenté" />
+							<p:inputText id="parenteAssure"
+								value="#{utilisateurBean.assure.type}"
+								validatorMessage="Entrer un lien de parenté valide">
+								<f:validateRegex pattern="^[a-zA-Z ]*$" />
+							</p:inputText>
+							<p:message id="s4" for="parenteAssure" />
+						</p:panelGrid>
+						<p:commandButton icon="ui-icon-circle-plus"
+							action="#{utilisateurBean.addToListAssures}" update="@form" />
+						<p:dataTable value="#{utilisateurBean.assuresToAdd}" var="a"
+							emptyMessage="pas d'assurés relatifs à cet employer">
+							<p:column headerText="Nom">
+								<h:outputText value="#{a.name}" />
+							</p:column>
+							<p:column headerText="Prénom">
+								<h:outputText value="#{a.prenom}" />
+							</p:column>
+							<p:column headerText="Parenté">
+								<h:outputText value="#{a.type}" />
+							</p:column>
+							<p:column headerText="">
+								<p:commandButton icon="ui-icon-circle-minus"
+									action="#{utilisateurBean.deleteAssureFromListToAdd(a)}"
+									update="@form" />
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+					<p:tab id="confirm" title="Confirmation">
+						<p:panelGrid columns="2">
+							<p:outputLabel value="Nom" />
+							<p:outputLabel value="#{utilisateurBean.nom}" />
+							<p:outputLabel value="Prénom" />
+							<p:outputLabel value="#{utilisateurBean.prenom}" />
+							<p:outputLabel value="Matricule" />
+							<p:outputLabel value="#{utilisateurBean.matricule}" />
+							<p:outputLabel value="Parenté" />
+							<p:outputLabel value="#{utilisateurBean.type}" />
+							<p:dataList value="#{utilisateurBean.assuresToAdd}" var="a"
+								type="ordered"
+								emptyMessage="pas d'assurés relatifs à cet employer">
+								<f:facet name="header">
+									<p:outputLabel value="assurés" />
+								</f:facet>
+        #{a.name}, #{a.prenom}, #{a.type}
+    </p:dataList>
+
+						</p:panelGrid>
+
+						<p:commandButton value="Sauvegarder" icon="ui-icon-disk" update="@form"
+							style="background:#6FDC6F;color: #FFFFFF"
+							action="#{utilisateurBean.doAddUtilisateur}">
+							<p:confirm header="Confirmation" message="Êtes-vous sûr?"
+								icon="ui-icon-alert" />
+						</p:commandButton>
+
+						<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+							<p:commandButton value="Oui" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+							<p:commandButton value="Non" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+						</p:confirmDialog>
+					</p:tab>
+				</p:wizard>
+			</p:panel>
+		</h:form>
+
+
+	</ui:define>
+
+</ui:composition>
+</html>

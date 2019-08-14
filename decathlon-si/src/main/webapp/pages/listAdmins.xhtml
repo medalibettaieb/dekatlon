@@ -1,0 +1,213 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrought"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/facelets/template.xhtml">
+	<ui:define name="pageTitle">admin</ui:define>
+	<ui:define name="content">
+		<ul class="breadcrumb">
+			<li><i class="ace-icon fa fa-home home-icon"></i> <a
+				href="adminHome.jsf">Acceuil</a></li>
+			<li class="active">espace Administrateur</li>
+		</ul>
+		<!-- /.breadcrumb -->
+
+	</ui:define>
+	<ui:define name="pageContent">
+		<h:form id="form">
+			<p:panel header="liste Administrateur">
+
+				<p:dataTable value="#{utilisateurBean.administrateursToList}"
+					id="tab3" var="u" emptyMessage="Aucun administrateur"
+					selectionMode="single"
+					selection="#{utilisateurBean.administrateurSelected}"
+					rowKey="#{u.id}" editable="true">
+
+					<p:ajax event="rowEdit"
+						listener="#{utilisateurBean.onRowEditAdministrateur}"
+						update="@form" />
+					<p:ajax event="rowEditCancel"
+						listener="#{utilisateurBean.onRowDeleteAdministrateur}"
+						update="@form" />
+					<p:ajax event="rowSelect"
+						listener="#{utilisateurBean.onRowSelectAdministrateur}"
+						oncomplete="PF('d2').show()" update="@form" />
+
+
+					<p:column headerText="matricule" filterBy="#{u.matricule}"
+						filterMatchMode="contains">
+						<p:outputLabel value="#{u.matricule}" />
+					</p:column>
+					<p:column headerText="Nombre des assurés">
+						<p:outputLabel value="#{u.assures.size()}" />
+					</p:column>
+					<p:column headerText="nom">
+						<p:outputLabel value="#{u.name}" />
+					</p:column>
+					<p:column headerText="prenom">
+						<p:outputLabel value="#{u.prenom}" />
+					</p:column>
+					<p:column headerText="mot de passe">
+						<p:outputLabel value="#{u.password}" />
+					</p:column>
+					<p:column headerText="email">
+						<p:outputLabel value="#{u.email}" />
+					</p:column>
+					<p:column headerText="Nombre de demandes">
+						<p:outputLabel value="#{u.demandes.size()}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+
+
+			<p:dialog widgetVar="d2" modal="true" showEffect="fade"
+				header="#{utilisateurBean.administrateurSelected.id}"
+				hideEffect="fade" resizable="true">
+				<p:outputPanel style="text-align:center;">
+					<p:panelGrid columns="3">
+						<p:outputLabel value="Matricule" />
+						<p:inputText id="i1" disabled="true"
+							value="#{utilisateurBean.administrateurSelected.matricule}" />
+						<p:message id="m1" for="i1" />
+
+						<p:outputLabel value="Nom" />
+						<p:inputText id="i2"
+							value="#{utilisateurBean.administrateurSelected.name}"
+							required="true" requiredMessage="svp indiquez une valeur"
+							validatorMessage="Entrer un nom valide">
+							<f:validateRegex pattern="^[a-zA-Z ]*$" />
+							<p:ajax event="blur" update="nom" />
+						</p:inputText>
+						<p:message for="i2" id="nom" />
+
+						<p:outputLabel value="Prénom" />
+						<p:inputText id="i3" validatorMessage="Entrer un prénom valide"
+							value="#{utilisateurBean.administrateurSelected.prenom}"
+							required="true" requiredMessage="svp indiquez une valeur">
+							<f:validateRegex pattern="^[a-zA-Z ]*$" />
+							<p:ajax event="blur" update="prenom" />
+						</p:inputText>
+						<p:message for="i3" id="prenom" />
+
+						<p:outputLabel value="Mot de passe" />
+						<p:inputText id="pwd1" required="true"
+							requiredMessage="svp indiquez une valeur"
+							value="#{utilisateurBean.administrateurSelected.password}">
+							<p:ajax event="blur" update="i23" />
+						</p:inputText>
+						<p:message for="pwd1" id="i23" />
+
+						<p:outputLabel value="Email" />
+						<p:inputText id="mail" required="true"
+							requiredMessage="svp indiquez une valeur"
+							validatorMessage="Entrer un email valide"
+							value="#{utilisateurBean.administrateurSelected.email}">
+							<f:validateRegex
+								pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"></f:validateRegex>
+							<p:ajax event="blur" update="email" />
+						</p:inputText>
+						<p:message for="mail" id="email" />
+					</p:panelGrid>
+					<p:commandButton value="Modifier" icon="ui-icon-disk"
+						style="background:#6FDC6F;color: #FFFFFF"
+						action="#{utilisateurBean.updateAdministrateur()}" update="tab3"
+						oncomplete="PF('d2').hide()" process="@this" />
+					<p:commandButton value="Supprimer" icon="ui-icon-trash"
+						action="#{utilisateurBean.suprimerAdministrateur()}" update="tab3"
+						oncomplete="PF('d2').hide()" />
+					<p:commandButton value="consulter assurés" icon="ui-icon-search"
+						oncomplete="PF('d4').show()" update="@(form)" />
+				</p:outputPanel>
+			</p:dialog>
+
+			<p:dialog header="#{utilisateurBean.administrateurSelected.id}"
+				widgetVar="d4" modal="true" showEffect="fade" hideEffect="fade"
+				resizable="true">
+				<p:dataTable value="#{utilisateurBean.assuresByAdmin}" var="a"
+					emptyMessage="aucun assuré lié a cet administrateur"
+					selection="#{utilisateurBean.assureSelected}" id="tab2"
+					selectionMode="single" rowKey="#{a.id}">
+					<p:ajax event="rowSelect"
+						listener="#{utilisateurBean.onRowSelectAssure}"
+						oncomplete="PF('d3').show()" update="@form" />
+
+					<p:column headerText="Matricule de l'assuré">
+						<p:outputLabel value="#{a.matricule}" />
+					</p:column>
+					<p:column headerText="Nom de l'assuré">
+						<p:outputLabel value="#{a.name}" />
+					</p:column>
+					<p:column headerText="Prénom de l'assuré">
+						<p:outputLabel value="#{a.prenom}" />
+					</p:column>
+					<p:column headerText="Parenté">
+						<p:outputLabel value="#{a.type}" />
+					</p:column>
+				</p:dataTable>
+			</p:dialog>
+
+
+			<p:dialog header="#{utilisateurBean.assureSelected.name}"
+				widgetVar="d3" modal="true" showEffect="fade" hideEffect="fade"
+				resizable="true">
+				<p:panelGrid id="grid2" columns="3">
+					<p:outputLabel value="Matricule" />
+					<p:inputText id="assureMatricule"
+						value="#{utilisateurBean.assureSelected.matricule}"
+						disabled="true" />
+					<p:message for="assureMatricule" />
+
+					<p:outputLabel value="nom" />
+					<p:inputText id="assureName"
+						value="#{utilisateurBean.assureSelected.name}" required="true"
+						validatorMessage="Entrer un nom valide"
+						requiredMessage="svp indiquez une valeur">
+						<f:validateRegex pattern="^[a-zA-Z ]*$" />
+						<p:ajax event="blur" update="i9" />
+					</p:inputText>
+					<p:message for="assureName" id="i9" />
+
+					<p:outputLabel value="Prénom" />
+					<p:inputText id="assureLastName"
+						value="#{utilisateurBean.assureSelected.prenom}" required="true"
+						validatorMessage="Entrer un nom valide"
+						requiredMessage="svp indiquez une valeur">
+						<f:validateRegex pattern="^[a-zA-Z ]*$" />
+						<p:ajax event="blur" update="i10" />
+					</p:inputText>
+					<p:message for="assureLastName" id="i10" />
+
+					<p:outputLabel value="Parenté" />
+					<p:inputText id="Parenté"
+						value="#{utilisateurBean.assureSelected.type}" required="true"
+						validatorMessage="Entrer un nom valide"
+						requiredMessage="svp indiquez une valeur">
+						<f:validateRegex pattern="^[a-zA-Z ]*$" />
+						<p:ajax event="blur" update="i11" />
+					</p:inputText>
+					<p:message for="Parenté" id="i11" />
+
+
+
+
+				</p:panelGrid>
+				<p:commandButton value="Modifier" icon="ui-icon-disk"
+					style="background:#6FDC6F;color: #FFFFFF"
+					oncomplete="PF('d3').hide() || PF('d4').show()"
+					action="#{utilisateurBean.updateAssure()}" update="tab2" />
+				<p:commandButton value="Supprimer" icon="ui-icon-disk"
+					action="#{utilisateurBean.deleteAssure()}" />
+			</p:dialog>
+
+
+
+
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

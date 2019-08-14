@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<ui:composition template="/facelets/template.xhtml">
+	<ui:define name="content">
+		<ul class="breadcrumb">
+			<li><i class="ace-icon fa fa-home home-icon"></i> <a
+				href="adminHome.jsf">Acceuil</a></li>
+			<li class="active">espace Administrateur</li>
+		</ul>
+		<!-- /.breadcrumb -->
+
+	</ui:define>
+
+	<ui:define name="pageContent">
+		<h:form id="form">
+			<p:panel header="ajouter Acte Médical">
+				<p:messages />
+				<p:panelGrid id="pan" columns="3">
+					<p:outputLabel value="Type acte medical *:" />
+					<p:inputText value="#{acteBean.acteMedical.typeActe}" id="input1"
+						placeholder="Type de l'acte médical" required="true"
+						requiredMessage="indiquez une valeur">
+						<f:validator validatorId="av" />
+					</p:inputText>
+					<p:message id="m1" for="input1" />
+
+					<p:outputLabel value="Plafond *:" />
+
+					<p:inputNumber id="i1" value="#{acteBean.acteMedical.plafond}"
+						symbol=" DT" symbolPosition="s" placeholder="Plafond total"
+						decimalSeparator="," thousandSeparator="."
+						disabled="#{not empty acteBean.acteMedical.pourcentage}">
+						<f:ajax event="keyup" render="i2" />
+					</p:inputNumber>
+					<p:message id="m2" for="i1" />
+					<p:outputLabel value="Pourcentage des frais de remboursement *:" />
+
+					<p:inputNumber id="i2" value="#{acteBean.acteMedical.pourcentage}"
+						placeholder="% des frais de remboursements" symbolPosition="s"
+						symbol="%" disabled="#{not empty acteBean.acteMedical.plafond}">
+						<f:ajax event="keyup" render="i1" />
+					</p:inputNumber>
+					<p:message id="m3" for="i2" />
+					<p:commandButton value="Sauvegarder"
+						style="background:#6FDC6F;color: #FFFFFF"
+						styleClass="customStyleButton" action="#{acteBean.doAddActe()}"
+						update="@form:pan">
+						<p:confirm header="Confirmation" message="Êtes-vous sûr?"
+							icon="ui-icon-alert" />
+					</p:commandButton>
+					<p:commandButton value="Reset" action="#{acteBean.reset()}"
+						style="background:#FF0000; color: #FFFFFF"
+						styleClass="customStyleButton" update="@form:pan" />
+
+
+
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="Oui" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="Non" type="button"  
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+
+
+				</p:panelGrid>
+			</p:panel>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+</html>

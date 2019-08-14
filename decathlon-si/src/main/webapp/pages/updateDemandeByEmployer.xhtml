@@ -1,0 +1,108 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrought"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/facelets/template.xhtml">
+	<ui:define name="pageTitle">espace employer</ui:define>
+	<ui:define name="content">
+		<ul class="breadcrumb">
+			<li><i class="ace-icon fa fa-home home-icon"></i> <a
+				href="employerHome.jsf">Home</a></li>
+			<li class="active">espace Employé</li>
+		</ul>
+		<!-- /.breadcrumb -->
+
+	</ui:define>
+	<ui:define name="pageHeader">
+		<h1></h1>
+
+	</ui:define>
+	<ui:define name="pageContent">
+		<h:form id="f">
+
+			<p:panel header="Mettre à jour ma demande">
+
+
+
+				<p:panel header="Détails demande">
+					<p:dataTable value="#{demandeTMP.demande.detailDemandes}" var="d" emptyMessage="Aucun acte médical"
+						id="t">
+						<p:column headerText="Acte">
+							<h:outputText value="#{d.acteMedical.typeActe}" />
+						</p:column>
+						<p:column headerText="Montant">
+							<h:outputText value="#{d.montant}" />
+						</p:column>
+						<p:column headerText="Date">
+							<h:outputText value="#{d.dateActe}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Action">
+							<p:commandButton value="supprimer"
+								action="#{demandeTMP.supprimerDetail(d)}" process="@all"
+								update="f" />
+						</p:column>
+
+					</p:dataTable>
+
+				</p:panel>
+				<p:panel header="Ajouter détails" >
+					<p:panelGrid columns="7">
+						<p:outputLabel value="acte médical" />
+						<p:selectOneMenu value="#{demandeBean.acteMedical}"
+							converter="#{acteConverter}" required="true">
+							<f:selectItems value="#{acteBean.acteMedicals}" var="a"
+								itemLabel="#{a.typeActe}" itemValue="#{a}" />
+						</p:selectOneMenu>
+						<p:outputLabel value="montant" />
+						<p:inputNumber value="#{demandeBean.montant}" symbol=" DT"
+							symbolPosition="s" placeholder="Montant" decimalSeparator=","
+							thousandSeparator="." >
+							<p:ajax update="@form" />
+						</p:inputNumber>
+						<p:outputLabel value="date" />
+						<p:calendar value="#{demandeBean.dateActe}" >
+							<p:ajax update="@form" />
+						</p:calendar>
+						<p:commandButton update="@form"
+						style="background:#6FDC6F;color: #FFFFFF;float:left"
+						styleClass="customStyleButton"
+						action="#{demandeBean.addDetailToDemandeToUpdate}" value="Ajouter Détail">
+						<p:confirm header="Confirmation" message="Êtes-vous sûr?"
+							icon="ui-icon-alert" />
+					</p:commandButton>
+					</p:panelGrid>
+
+
+					
+						
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="Oui" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="Non" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+				</p:panel>
+				<p:accordionPanel>
+				<p:tab title="Feuille de soin">
+					<p:fileUpload
+						fileUploadListener="#{imageUploader.handleFileUpload}"
+						label="Ajouter" uploadLabel="Télécharger" cancelLabel="Annuler"
+						mode="advanced" auto="false" sizeLimit="10485760" multiple="true"
+						fileLimit="10" fileLimitMessage="Maximum 10 images"
+						dragDropSupport="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+				</p:tab>
+				</p:accordionPanel>
+
+
+			</p:panel>
+
+
+
+		</h:form>
+	</ui:define>
+</ui:composition>

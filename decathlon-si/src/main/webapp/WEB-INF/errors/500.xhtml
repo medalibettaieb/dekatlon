@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	template="/WEB-INF/templates/errorPagesTemplate.xhtml">
+	<ui:define name="publicImports"/>
+	<ui:define name="titleErrorCode">500</ui:define>
+	<ui:define name="errorPageContent">
+		<div class="error-page">
+			<h2 class="headline text-red" style="margin-right: 20px;">500</h2>
+			<div class="error-content">
+				<br />
+				<h3>
+					<i class="fa fa-warning text-red"></i> Oops! Something went wrong.
+				</h3>
+				<p>
+					We are experiencing issues rendring the requested page. We will
+					work on fixing that right away. Meanwhile, you may <a
+						href="/open-insurance-web/login.jsf">return to the
+						home page</a>.
+				</p>
+			</div>
+		</div>
+	</ui:define>
+
+</ui:composition>

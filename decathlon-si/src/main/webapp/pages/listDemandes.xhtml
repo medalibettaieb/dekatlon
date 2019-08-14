@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<ui:composition template="/facelets/template.xhtml">
+	<ui:define name="content">
+		<ul class="breadcrumb">
+			<li><i class="ace-icon fa fa-home home-icon"></i> <a
+				href="adminHome.jsf">Acceuil</a></li>
+			<li class="active">espace Administrateur</li>
+		</ul>
+		<!-- /.breadcrumb -->
+
+	</ui:define>
+
+	<ui:define name="pageContent">
+		<h:form id="form" enctype="multipart/form-data">
+			<p:panel header="liste Demandes ">
+
+				<p:dataTable value="#{demandeBean.allDemandes}" var="a" id="t1"
+					widgetVar="tt" editable="true" editMode="cell"
+					selectionMode="single" rowKey="#{a.id}"
+					emptyMessage="Aucune demande">
+					<p:ajax event="rowSelect" listener="#{demandeBean.onRowSelect}"
+						oncomplete="PF('d2').show()" update=":form:d2" />
+
+					<p:ajax event="cellEdit" listener="#{demandeBean.onCellEdit}"
+						update=":form:t1" />
+					<p:column headerText="Date dépot">
+						<h:outputText value="#{a.dateDeDepot}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"
+								timeZone="GMT+1:00" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="État">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{a.etatDemande}" />
+							</f:facet>
+							<f:facet name="input">
+								<h:selectOneMenu value="#{demandeBean.etatChoisi}"
+									style="width:100%">
+									<f:selectItems value="#{demandeBean.etats}" var="e"
+										itemLabel="#{e}" itemValue="#{e}" />
+
+								</h:selectOneMenu>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Matricule employé"
+						filterBy="#{a.employer.matricule}" filterMatchMode="contains">
+						<h:outputText
+							value="#{a.employerAssures.matricule} #{a.employer.matricule}" />
+					</p:column>
+
+
+				</p:dataTable>
+
+				<p:contextMenu for="t1" widgetVar="cMenu">
+					<p:menuitem value="Edit Cell" icon="ui-icon-search"
+						onclick="PF('tt').showCellEditor();return false;" />
+					<p:menuitem value="Hide Menu" icon="ui-icon-close"
+						onclick="PF('cMenu').hide()" />
+				</p:contextMenu>
+
+
+				<p:dialog header="images" widgetVar="diag" modal="true"
+					dynamic="true" showEffect="fade" hideEffect="fade" resizable="true"
+					position="center">
+					<p:outputPanel id="gal" style="text-align:center;">
+						<p:galleria value="#{demandeBean.demandeSelectionnee.images}"
+							showFilmstrip="true" panelHeight="100" panelWidth="100"
+							autoPlay="false" var="image">
+							<p:graphicImage
+								value="http://localhost:18080/openCars/images/#{image}"
+								alt="Image Description for #{image}" title="#{image}" />
+
+						</p:galleria>
+						<p:graphicImage
+							value="http://localhost:18080/openCars/images/95a5dd41-8785-4c3b-9dcd-676ba714d389.jpg" />
+					</p:outputPanel>
+
+				</p:dialog>
+
+				<p:dialog header="Détails demande" widgetVar="d2" modal="true"
+					id="d2" dynamic="true" showEffect="fade" hideEffect="fade"
+					resizable="true" position="center">
+					<p:outputPanel id="p2" style="text-align:center;">
+						<p:dataTable
+							value="#{demandeBean.demandeSelectionnee.detailDemandes}" var="d">
+							<p:column headerText="Acte">
+								<h:outputText value="#{d.acteMedical.typeActe}" />
+							</p:column>
+
+							<p:column headerText="Montant">
+								<h:outputText value="#{d.montant}" />
+							</p:column>
+							<p:column headerText="Date">
+								<h:outputText value="#{d.dateActe}">
+									<f:convertDateTime pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+							<!-- <p:column style="text-align: center" headerText="images"
+								width="10%">
+								<p:commandButton update="@form" oncomplete="PF('diag').show()"
+									rendered="#{not empty a.images}" icon="ui-icon-search"
+									title="View">
+									<f:setPropertyActionListener value="#{a}"
+										target="#{demandeBean.demandeSelectionnee}" />
+								</p:commandButton>
+
+							</p:column>
+							<p:column>
+								<p:commandButton update="@form" oncomplete="PF('diag').show()"
+									icon="ui-icon-search" title="View">
+									<f:setPropertyActionListener value="#{a}"
+										target="#{demandeBean.demandeSelectionnee}" />
+								</p:commandButton>
+							</p:column> -->
+						</p:dataTable>
+
+						<p:dialog modal="true" widgetVar="statusDialog" header="Status"
+							draggable="false" closable="false" resizable="false">
+							<p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+						</p:dialog>
+
+						<h:form>
+							<p:commandButton value="Download" ajax="false"
+								onclick="PrimeFaces.monitorDownload(start, stop);"
+								icon="ui-icon-arrowthick-1-s" action="#{fileDownloadView.dowloadImages(demandeBean.demandeSelectionnee)}">
+								<p:fileDownload value="#{fileDownloadView.file}" />
+							</p:commandButton>
+						</h:form>
+
+						<script type="text/javascript">
+function start() {
+    PF('statusDialog').show();
+}
+ 
+function stop() {
+    PF('statusDialog').hide();
+}
+</script>
+					</p:outputPanel>
+				</p:dialog>
+			</p:panel>
+			
+			
+			
+				<p:dialog modal="true" widgetVar="statusDialog" header="Status"
+			draggable="false" closable="false" resizable="false">
+			<p:graphicImage name="/demo/images/ajaxloadingbar.gif" />
+		</p:dialog>
+
+		<h:form>
+			<p:commandButton value="Download 22" ajax="false"
+				onclick="PrimeFaces.monitorDownload(start, stop);"
+				icon="ui-icon-arrowthick-1-s">
+				<p:fileDownload value="#{fileDownloadView.file}" />
+			</p:commandButton>
+		</h:form>
+
+		<script type="text/javascript">
+function start() {
+    PF('statusDialog').show();
+}
+ 
+function stop() {
+    PF('statusDialog').hide();
+}
+</script>
+
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+</html>

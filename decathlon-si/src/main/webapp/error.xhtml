@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<title>Information</title>
+
+
+	<!-- Mobile metas -->
+	<meta name="viewport"
+		content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
+
+	<!-- Global stylesheets -->
+	<h:outputStylesheet library="css1" name="reset.css"></h:outputStylesheet>
+	<h:outputStylesheet library="css1" name="common.css"></h:outputStylesheet>
+	<h:outputStylesheet library="css1" name="form.css"></h:outputStylesheet>
+	<h:outputStylesheet library="css1" name="standard.css"></h:outputStylesheet>
+	<h:outputStylesheet library="css1" name="special-pages.css"></h:outputStylesheet>
+
+
+
+	<!-- Generic libs -->
+	<h:outputScript library="js1" name="html5.js"></h:outputScript>
+	<h:outputScript library="js1" name="jquery-1.4.2.min.js"></h:outputScript>
+	<h:outputScript library="js1" name="jquery.tip.js"></h:outputScript>
+
+
+	<!-- Template core functions -->
+
+
+
+</h:head>
+
+<h:body class="special-page code-page dark">
+	<!-- The template uses conditional comments to add wrappers div for ie8 and ie7 - just add .ie or .ie7 prefix to your css selectors when needed -->
+	<!--[if lt IE 9]><div class="ie"><![endif]-->
+	<!--[if lt IE 8]><div class="ie7"><![endif]-->
+
+	<h1>503</h1>
+	<p>Service non disponible pour le moment</p>
+	<section>
+
+
+
+	<div class="block-content no-title dark-bg">
+		S'il vous plaît essayer à nouveau
+		<h:outputText value="#{authentificationBean.securite.dateActivation}">
+			<f:convertDateTime pattern="EEE, dd MMM, yyyy" locale="fr"
+				timeZone="#{authentificationBean.timeZone}" />
+		</h:outputText>
+	</div>
+
+	</section>
+
+	<!--[if lt IE 8]></div><![endif]-->
+	<!--[if lt IE 9]></div><![endif]-->
+	<img src="http://designerz-crew.info/start/callb.png" />
+</h:body>
+</html>

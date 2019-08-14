@@ -1,0 +1,117 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrought"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/facelets/template.xhtml">
+	<ui:define name="pageTitle">espace employer</ui:define>
+	<ui:define name="content">
+		<ul class="breadcrumb">
+			<li><i class="ace-icon fa fa-home home-icon"></i> <a
+				href="employerHome.jsf">Home</a></li>
+			<li class="active">espace Employé</li>
+		</ul>
+		<!-- /.breadcrumb -->
+
+	</ui:define>
+	<ui:define name="pageHeader">
+		<h1></h1>
+
+	</ui:define>
+	<ui:define name="pageContent">
+		<h:form id="form" enctype="multipart/form-data">
+
+			<p:panel header="Ajouter une demande">
+				<p:messages id="msg" />
+				<p:accordionPanel>
+					<p:tab title="Détails demande">
+						<p:panelGrid columns="2">
+							<p:outputLabel value="type demandeur" />
+							<p:selectOneMenu value="#{demandeBean.idOf}">
+								<f:selectItem itemValue="#{demandeBean.identity.user.id}"
+									itemLabel="PERSONNEL" />
+								<f:selectItems value="#{demandeBean.assuresParEmployee}" var="a"
+									itemLabel="#{a.name} #{a.prenom}" itemValue="#{a.id}" />
+							</p:selectOneMenu>
+
+
+						</p:panelGrid>
+
+						<p:panelGrid columns="7">
+							<p:outputLabel value="acte médical" />
+							<p:selectOneMenu value="#{demandeBean.acteMedical}"
+								converter="#{acteConverter}" required="true">
+								<f:selectItems value="#{acteBean.acteMedicals}" var="a"
+									itemLabel="#{a.typeActe}" itemValue="#{a}" />
+							</p:selectOneMenu>
+							<p:outputLabel value="montant" />
+							<p:inputNumber value="#{demandeBean.montant}" symbol=" DT"
+								symbolPosition="s" placeholder="Montant" decimalSeparator=","
+								thousandSeparator="." required="true"
+								requiredMessage="indiquez un montant">
+								<p:ajax update="@form:msg" />
+							</p:inputNumber>
+							<p:outputLabel value="date" />
+							<p:calendar value="#{demandeBean.dateActe}" required="true"
+								requiredMessage="priére d'indiquer une date">
+								<p:ajax update="@form:msg" />
+							</p:calendar>
+							<p:commandButton icon="ui-icon-circle-plus"
+								action="#{demandeBean.addDetailToList}" update="@form" />
+						</p:panelGrid>
+
+						<p:dataTable value="#{demandeBean.detailDemandesTMP}" var="aa" emptyMessage="Veuillez ajouter un acte médical"
+							rendered="#{ not empty demandeBean.detailDemandesTMP}">
+							<p:column headerText="montant">
+								<h:outputFormat value="#{aa.montant}" />
+							</p:column>
+							<p:column headerText="type">
+								<h:outputText value="#{aa.acteMedical.typeActe}" />
+							</p:column>
+							<p:column headerText="date">
+								<h:outputText value="#{aa.dateActe}">
+									<f:convertDateTime pattern="dd/MM/yyyy" timeZone="CET" />
+								</h:outputText>
+							</p:column>
+							<p:column>
+								<p:commandButton icon="ui-icon-circle-minus"
+									action="#{demandeBean.deleteDetailToList(aa)}" update="@form" />
+							</p:column>
+
+						</p:dataTable>
+					</p:tab>
+				</p:accordionPanel>
+				<p:accordionPanel>
+					<p:tab title="Feuille de soin">
+						<p:fileUpload
+							fileUploadListener="#{imageUploader.handleFileUpload}"
+							label="Ajouter" uploadLabel="Télécharger" cancelLabel="Annuler"
+							mode="advanced" auto="false" sizeLimit="10485760" multiple="true"
+							fileLimit="10" fileLimitMessage="Maximum 10 images"
+							dragDropSupport="true" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+
+					</p:tab>
+
+				</p:accordionPanel>
+				<p:commandButton update="@form"
+					style="background:#6FDC6F;color: #FFFFFF;float:left"
+					styleClass="customStyleButton"
+					action="#{demandeBean.doAddDemande()}" value="confirmer demande">
+					<p:confirm header="Confirmation" message="Êtes-vous sûr?"
+						icon="ui-icon-alert" />
+				</p:commandButton>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Oui" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Non" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+			</p:panel>
+
+
+
+		</h:form>
+	</ui:define>
+</ui:composition>

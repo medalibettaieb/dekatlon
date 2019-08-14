@@ -1,0 +1,58 @@
+<!DOCTYPE html >
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head></h:head>
+<body>
+	<ui:composition template="/WEB-INF/template/template.xhtml">
+		<ui:define name="content">
+
+			<h:form id="form" enctype="multipart/form-data">
+			<p:messages id="msgs" />
+				<p:dataTable value="#{missionBean.missions}" var="m" rows="3"
+					paginator="true" rowKey="#{m.id}" paginatorPosition="bottom">
+					<f:facet name="header">missions</f:facet>
+					<p:column>
+						<f:facet name="header">site</f:facet>
+						<p:outputLabel value="#{m.site}" />
+					</p:column>
+					<p:column>
+						<p:commandButton value="select" update="@form:"
+							action="#{imagesCharger.doShowMissionSelected()}">
+							<f:setPropertyActionListener value="#{m}"
+								target="#{imagesCharger.mission}"></f:setPropertyActionListener>
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+				<br />
+				<p:commandButton value="nouvelle photo"
+					action="#{imagesCharger.doNotShowMissionSelected()}" update="@form" />
+				<br />
+				<p:outputLabel value="site"
+					rendered="#{! imagesCharger.showMissionSelected}" />
+				<br />
+				<p:inputText id="site" value="#{imagesCharger.mission.site}"
+					rendered="#{! imagesCharger.showMissionSelected}" />
+					<p:message for="site" display="icon" />
+				<h2>
+					<p:outputLabel id="l"
+						value="upload d'une photo pour une mission : #{imagesCharger.showMissionSelected ?  imagesCharger.mission.site :'nouvelle' }" />
+				</h2>
+				<br />
+				<br />
+				<h:outputText value="photo : " />
+				<p:fileUpload mode="simple" id="file"
+					value="#{imagesCharger.uploadedFile}" />
+
+				<h:commandButton value="Upload photo"
+					action="#{imagesCharger.create()}" update="@form" />
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
